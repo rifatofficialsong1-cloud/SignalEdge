@@ -5,15 +5,13 @@ const axios = require('axios');
 const { RSI } = require('technicalindicators');
 const cron = require('node-cron');
 
-// তোর MongoDB লিঙ্ক অলরেডি সেট করা আছে
+// এখানে আমি সরাসরি লিঙ্ক বসিয়ে দিচ্ছি যাতে কোনো মিস না হয়
 const MONGO_URI = 'mongodb+srv://mdrifat0pq_db_user:JNC8m3E0dFGyUUEu@cluster0.oik4mbq.mongodb.net/?retryWrites=true&w=majority';
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-// ডাটাবেস মডেল
 const User = mongoose.model('User', new mongoose.Schema({
     chatId: Number,
-    lang: { type: String, default: 'en' },
-    plan: { type: String, default: 'free' }
+    lang: { type: String, default: 'en' }
 }));
 
 const translations = {
@@ -34,14 +32,13 @@ async function updateData() {
             const rsiVal = RSI.calculate({ values: prices, period: 14 });
             const lastRsi = rsiVal[rsiVal.length - 1];
             marketData[coin.symbol.toUpperCase()] = {
-                name: coin.name,
                 price: coin.current_price,
                 rsi: lastRsi ? lastRsi.toFixed(2) : "N/A",
                 action: lastRsi < 35 ? "buy" : lastRsi > 65 ? "sell" : "wait"
             };
         });
-        console.log("Market Data Synced");
-    } catch (e) { console.log("API Error"); }
+        console.log("✅ Market Data Synced");
+    } catch (e) { console.log("❌ API Error"); }
 }
 
 cron.schedule('*/3 * * * *', updateData);
@@ -66,12 +63,11 @@ bot.hears(['BTC', 'ETH', 'SOL'], async (ctx) => {
     const user = await User.findOne({ chatId: ctx.chat.id });
     const coin = ctx.message.text;
     const data = marketData[coin];
-    if (!data) return ctx.reply("Wait a moment, loading data...");
-    const t = translations[user.lang || 'en'];
-    ctx.replyWithMarkdown(`📊 *${coin}*\n💰 Price: $${data.price}\n📉 RSI: ${data.rsi}\n🚀 Action: ${t[data.action]}`);
+    if (!data) return ctx.reply("Wait a moment...");
+    ctx.replyWithMarkdown(`📊 *${coin}*\n💰 Price: $${data.price}\n📉 RSI: ${data.rsi}\n🚀 Action: ${translations[user.lang || 'en'][data.action]}`);
 });
 
 mongoose.connect(MONGO_URI).then(() => {
-    console.log("Bot Connected to DB");
+    console.log("🚀 DB Connected Successfully!");
     bot.launch();
 });
