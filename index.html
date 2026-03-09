@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalEdge - ক্রিপ্টো সিগন্যাল</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0D0F10;
+            color: #20C20E;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: blink 1s infinite;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 24px;
+            background: #20C20E;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+        .status {
+            color: #1A4A1A;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SIGNALEDGE</h1>
+        <p>$ ./get_edge --ready</p>
+        <p class="status">> সিস্টেম চালু হচ্ছে... <span class="cursor"></span></p>
+    </div>
+</body>
+  </html>
